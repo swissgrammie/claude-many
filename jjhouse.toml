@@ -1,0 +1,5 @@
+# jjhouse repo-level configuration.
+# Workspaces are created on and reset to the local `main` bookmark because
+# this repo has no remote default branch until the first PR lands
+# (`trunk()` would resolve to the jj root commit and break the git view).
+base = "main"
