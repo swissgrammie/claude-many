@@ -16,8 +16,15 @@ final class SmokeTests: XCTestCase {
     /// Gate: the live smoke test launches real Claude instances, so it must be
     /// opted into. xcodebuild does not reliably pass environment variables to
     /// hosted test processes, so the gate is a flag file: `touch
-    /// /tmp/claude-many-smoke-run` before running the tests.
-    private static let gateFlag = "/tmp/claude-many-smoke-run"
+    /// /tmp/claude-many-smoke-run` before running the tests. The flag is
+    /// removed after the whole class finishes, so an ordinary later test run
+    /// never launches real applications.
+    nonisolated private static let gateFlag = "/tmp/claude-many-smoke-run"
+
+    nonisolated override class func tearDown() {
+        try? FileManager.default.removeItem(atPath: gateFlag)
+        super.tearDown()
+    }
 
     func testSmokeTwoIsolatedInstances() throws {
         let envGate = ProcessInfo.processInfo.environment["CLAUDE_MANY_SMOKE"] == "1"
@@ -25,7 +32,6 @@ final class SmokeTests: XCTestCase {
             envGate || FileManager.default.fileExists(atPath: Self.gateFlag),
             "Opt in with CLAUDE_MANY_SMOKE=1 or `touch /tmp/claude-many-smoke-run` (launches real Claude instances)."
         )
-        defer { try? FileManager.default.removeItem(atPath: Self.gateFlag) }
 
         let fm = FileManager.default
         let root = fm.temporaryDirectory
@@ -88,6 +94,62 @@ final class SmokeTests: XCTestCase {
         }, "the two smoke instances should have exited")
 
         // defer removes the scratch dir; nothing leaks into ~/Library.
+    }
+
+    /// Verifies the relaunch-reconciliation path end to end: quit the app
+    /// without stopping, relaunch, the leftover instance is detected by its
+    /// data dir and shown as running, Start refuses to spawn a duplicate, and
+    /// Stop terminates the leftover. Gated like the main smoke test.
+    func testSmokeReconcilesLeftoverInstancesAfterRelaunch() throws {
+        let envGate = ProcessInfo.processInfo.environment["CLAUDE_MANY_SMOKE"] == "1"
+        try XCTSkipUnless(
+            envGate || FileManager.default.fileExists(atPath: Self.gateFlag),
+            "Opt in with CLAUDE_MANY_SMOKE=1 or `touch /tmp/claude-many-smoke-run` (launches real Claude instances)."
+        )
+
+        let fm = FileManager.default
+        let root = fm.temporaryDirectory
+            .appendingPathComponent("claude-many-smoke-reconcile-\(UUID().uuidString)", isDirectory: true)
+        defer { try? fm.removeItem(at: root) }
+
+        let store = ProfileStore(fileURL: root.appendingPathComponent("profiles.json"))
+        let dataRoot = root.appendingPathComponent("Profiles")
+        let makeManager = {
+            ProfileManager(
+                store: store,
+                launcher: RealClaudeLauncher(),
+                claudeBundleURL: ProfileManager.defaultBundleURL,
+                dataRootDirectory: dataRoot
+            )
+        }
+        let manager = makeManager()
+        XCTAssertTrue(manager.bundleExists, "Claude.app must be installed for the smoke test")
+
+        let profile = try manager.addProfile(named: "Reconcile One")
+        try manager.start(id: profile.id)
+        XCTAssertTrue(waitFor(timeout: 20) { manager.isRunning(id: profile.id) })
+        XCTAssertTrue(waitFor(timeout: 180) { self.isPopulated(profile.dataDirectory) })
+
+        let baselineProcesses = claudeProcessCount()
+
+        // Simulate an app relaunch: a brand-new manager over the same store
+        // and data root, as if the user quit claude-many without stopping.
+        let relaunched = makeManager()
+        relaunched.load()
+        XCTAssertTrue(relaunched.isRunning(id: profile.id),
+                      "the leftover instance must be reconciled as running after relaunch")
+
+        // Start must not spawn a second instance into the live data dir.
+        try relaunched.start(id: profile.id)
+        XCTAssertTrue(waitFor(timeout: 60) {
+            claudeProcessCount() <= baselineProcesses
+        }, "no additional Claude process may be spawned while the leftover owns the data dir")
+
+        // Stopping via the relaunched manager terminates the leftover.
+        relaunched.stop(id: profile.id)
+        XCTAssertTrue(waitFor(timeout: 30) {
+            !relaunched.isRunning(id: profile.id) && claudeProcessCount() <= baselineProcesses - 1
+        }, "stopping the reconciled instance must terminate the leftover process")
     }
 
     // MARK: Helpers

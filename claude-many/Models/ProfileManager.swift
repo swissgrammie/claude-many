@@ -69,6 +69,24 @@ final class ProfileManager {
             profiles = try store.load()
         } catch {
             lastError = "Could not load profiles: \(error.localizedDescription)"
+            return
+        }
+        reconcileRunningProcesses()
+    }
+
+    /// Adopts Claude instances left over from a previous app run: any live
+    /// process whose CLAUDE_USER_DATA_DIR matches a profile's data directory
+    /// is tracked as that profile's running instance, so Start cannot spawn a
+    /// duplicate into a data directory that is still in use.
+    private func reconcileRunningProcesses() {
+        let executable = claudeBundleURL.appendingPathComponent("Contents/MacOS/Claude")
+        for handle in launcher.runningHandles(executable: executable) {
+            guard let dataDirectory = handle.dataDirectory else { continue }
+            guard let profile = profiles.first(where: {
+                $0.dataDirectory.path == dataDirectory.path
+            }) else { continue }
+            guard handles[profile.id] == nil else { continue }
+            attach(handle: handle, to: profile.id)
         }
     }
 
@@ -124,6 +142,14 @@ final class ProfileManager {
         }
         guard !isRunning(id: id) else { return }
 
+        // stop() reports the profile as stopped immediately, but the previous
+        // process can stay alive for up to the force-kill grace period.
+        // Launching now would put a second instance into a data directory the
+        // old process still owns.
+        if let previous = handles[id], previous.isRunning {
+            throw ProfileManagerError.stopInProgress
+        }
+
         guard FileManager.default.fileExists(atPath: claudeBundleURL.path) else {
             throw ProfileManagerError.bundleMissing(path: claudeBundleURL.path)
         }
@@ -141,9 +167,18 @@ final class ProfileManager {
             executable: executable,
             environment: ["CLAUDE_USER_DATA_DIR": profile.dataDirectory.path]
         )
+        attach(handle: handle, to: id)
+        lastError = nil
+    }
+
+    /// Registers a live handle as the running instance for a profile and
+    /// observes its termination. The `isRunning` re-check after assigning the
+    /// handler covers a process that exited before the handler could be set
+    /// (Foundation never invokes a termination handler attached to a process
+    /// that already exited).
+    private func attach(handle: ClaudeProcessHandle, to id: UUID) {
         handles[id] = handle
         runningProfileIDs.insert(id)
-        lastError = nil
 
         handle.terminationHandler = { [weak self, weak handle] in
             // Process calls the handler on an arbitrary queue; hop to the
@@ -155,6 +190,9 @@ final class ProfileManager {
                     self?.handleTermination(of: id, handle: handle)
                 }
             }
+        }
+        if !handle.isRunning {
+            handleTermination(of: id, handle: handle)
         }
     }
 
@@ -253,6 +291,7 @@ enum ProfileManagerError: LocalizedError, Equatable {
     case invalidLabel
     case profileNotFound
     case bundleMissing(path: String)
+    case stopInProgress
 
     var errorDescription: String? {
         switch self {
@@ -262,6 +301,8 @@ enum ProfileManagerError: LocalizedError, Equatable {
             return "That profile no longer exists."
         case .bundleMissing(let path):
             return "Claude.app was not found at \(path). Install Claude Desktop or fix the path in Settings."
+        case .stopInProgress:
+            return "This profile's previous instance is still shutting down; try again in a moment."
         }
     }
 }

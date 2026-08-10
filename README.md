@@ -111,6 +111,12 @@ xcodebuild -project claude-many.xcodeproj -scheme claude-many \
   leaves the machine. Nothing is ever written to the shared
   `~/Library/Application Support/Claude` folder.
 - **No fixed limit** on the number of profiles beyond disk space and memory.
+- **Restarting the app never double-starts a profile.** If claude-many is
+  quit while instances are still running, the next launch detects each
+  profile's live instance (by its data directory), shows it as running, and
+  refuses to start a second one into that data directory until the first has
+  actually exited. Starting a profile right after stopping it is likewise
+  refused until the previous instance has fully shut down.
 - Claude Desktop's own settings (theme, etc.) are per profile too, since
   they are part of the userData directory.
 
