@@ -58,7 +58,7 @@ struct RealClaudeLauncher: ClaudeLauncher {
     func runningHandles(executable: URL) -> [ClaudeProcessHandle] {
         let target = executable.resolvingSymlinksInPath().path
         var result: [ClaudeProcessHandle] = []
-        for pid in Self.allProcessIDs() {
+        for (pid, startTime) in Self.allProcesses() {
             guard let info = Self.processInfo(for: pid),
                   Self.executableMatches(info.executablePath, target: target),
                   let dataDir = info.environment["CLAUDE_USER_DATA_DIR"] else {
@@ -66,6 +66,7 @@ struct RealClaudeLauncher: ClaudeLauncher {
             }
             result.append(AttachedClaudeProcess(
                 pid: pid,
+                startTime: startTime,
                 dataDirectory: URL(fileURLWithPath: dataDir, isDirectory: true)
             ))
         }
@@ -79,14 +80,25 @@ struct RealClaudeLauncher: ClaudeLauncher {
         let environment: [String: String]
     }
 
-    private static func allProcessIDs() -> [Int32] {
+    private static func allProcesses() -> [(pid: Int32, startTime: timeval)] {
         var mib: [Int32] = [CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0]
         var size = 0
         guard sysctl(&mib, u_int(mib.count), nil, &size, nil, 0) == 0, size > 0 else { return [] }
         let count = size / MemoryLayout<kinfo_proc>.size
         var procs = [kinfo_proc](repeating: kinfo_proc(), count: count)
         guard sysctl(&mib, u_int(mib.count), &procs, &size, nil, 0) == 0 else { return [] }
-        return procs.map { $0.kp_proc.p_pid }
+        return procs.map { ($0.kp_proc.p_pid, $0.kp_proc.p_un.__p_starttime) }
+    }
+
+    /// The kernel-reported start time of a PID, or nil if no such process
+    /// exists. Together with the PID it uniquely identifies a process instance.
+    static func processStartTime(for pid: Int32) -> timeval? {
+        var mib: [Int32] = [CTL_KERN, KERN_PROC, KERN_PROC_PID, pid]
+        var size = MemoryLayout<kinfo_proc>.size
+        var proc = kinfo_proc()
+        guard sysctl(&mib, u_int(mib.count), &proc, &size, nil, 0) == 0,
+              size > 0 else { return nil }
+        return proc.kp_proc.p_un.__p_starttime
     }
 
     /// Reads a process's executable path and environment via KERN_PROCARGS2.
@@ -175,15 +187,30 @@ final class RealClaudeProcess: ClaudeProcessHandle, @unchecked Sendable {
 final class AttachedClaudeProcess: ClaudeProcessHandle, @unchecked Sendable {
     let processIdentifier: Int32
     let dataDirectory: URL?
+    /// The process's kernel start time, captured at adoption. The PID plus
+    /// this value identify one specific process instance even if the OS
+    /// recycles PIDs, so a later unrelated process can never be mistaken for
+    /// (or signaled as) the adopted one.
+    private let startTime: timeval
     private var storedTerminationHandler: (@Sendable () -> Void)?
     private var monitorTask: Task<Void, Never>?
 
-    init(pid: Int32, dataDirectory: URL?) {
+    init(pid: Int32, startTime: timeval, dataDirectory: URL?) {
         self.processIdentifier = pid
+        self.startTime = startTime
         self.dataDirectory = dataDirectory
     }
 
+    /// True only while the PID still refers to the adopted process instance.
+    private var sameProcessExists: Bool {
+        guard let current = RealClaudeLauncher.processStartTime(for: processIdentifier) else {
+            return false
+        }
+        return current.tv_sec == startTime.tv_sec && current.tv_usec == startTime.tv_usec
+    }
+
     var isRunning: Bool {
+        guard sameProcessExists else { return false }
         if kill(processIdentifier, 0) == 0 { return true }
         return errno == EPERM
     }
@@ -202,10 +229,12 @@ final class AttachedClaudeProcess: ClaudeProcessHandle, @unchecked Sendable {
     }
 
     func terminate() {
+        guard sameProcessExists else { return }
         kill(processIdentifier, SIGTERM)
     }
 
     func terminateForcefully() {
+        guard sameProcessExists else { return }
         kill(processIdentifier, SIGKILL)
     }
 
