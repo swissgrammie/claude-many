@@ -1,0 +1,72 @@
+{
+  "source": "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/claude-many/Views/SettingsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Claude Application",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 9
+        }
+      },
+      {
+        "comment": "",
+        "key": "Where data lives",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 30
+        }
+      },
+      {
+        "comment": "",
+        "key": "Path to Claude.app",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 10
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reset to Default",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 15
+        }
+      },
+      {
+        "comment": "",
+        "key": "Claude.app found",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "Claude.app not found",
+        "location": {
+          "startingColumn": 69,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "Profiles directory",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Every profile keeps all of its account data in its own private directory under ~/Library/Application Support/Claude-Many/Profiles. Nothing is ever written to the shared ~/Library/Application Support/Claude folder, and no data ever leaves this machine.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 39
+        }
+      }
+    ]
+  },
+  "version": 1
+}

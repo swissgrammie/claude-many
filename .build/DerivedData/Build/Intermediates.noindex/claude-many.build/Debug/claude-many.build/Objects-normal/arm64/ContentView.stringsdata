@@ -1,0 +1,112 @@
+{
+  "source": "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/claude-many/Views/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Something went wrong",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "Claude Many",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 30
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Profile",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 42
+        }
+      },
+      {
+        "comment": "",
+        "key": "No Profiles",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 13
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add one profile per Claude account.\nEach profile runs its own Claude Desktop instance with its own login.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 15
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Profile",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add a profile for another Claude account",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Profile",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 37
+        }
+      },
+      {
+        "comment": "",
+        "key": "Name (e.g. Work, Personal)",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 44
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Each profile gets its own private data directory.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 54
+        }
+      }
+    ]
+  },
+  "version": 1
+}

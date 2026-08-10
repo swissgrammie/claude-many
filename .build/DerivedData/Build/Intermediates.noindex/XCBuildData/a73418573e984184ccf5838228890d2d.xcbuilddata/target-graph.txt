@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'claude-manyTests' in project 'claude-many'
+➜ Explicit dependency on target 'claude-many' in project 'claude-many'
+Target 'claude-many' in project 'claude-many' (no dependencies)

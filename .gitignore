@@ -1,0 +1,12 @@
+# Xcode
+.build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/

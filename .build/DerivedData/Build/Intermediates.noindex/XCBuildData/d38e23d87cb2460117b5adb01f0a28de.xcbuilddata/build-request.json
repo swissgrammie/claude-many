@@ -1,0 +1,69 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildAndRun"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "9baa3b6dae95765b583ec76e8fde3ab0b4c9c452027992bfc34ca3a39a5a72d7"
+    },
+    {
+      "guid" : "9baa3b6dae95765b583ec76e8fde3ab06fafbc98c89cba1b976c238c51193a2f"
+    }
+  ],
+  "containerPath" : "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/claude-many.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "hostTargetedPlatform" : null,
+      "platform" : "macosx",
+      "sdk" : "macosx26.5",
+      "sdkVariant" : "macos",
+      "supportedArchitectures" : [
+        "arm64e",
+        "arm64",
+        "x86_64"
+      ],
+      "targetArchitecture" : "arm64"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/.build/DerivedData/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/.build/DerivedData/Build/Products",
+      "derivedDataPath" : "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/.build/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/.build/DerivedData/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/.build/DerivedData/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/.build/DerivedData/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Debug",
+    "overrides" : {
+      "commandLine" : {
+        "table" : {
+
+        }
+      },
+      "synthesized" : {
+        "table" : {
+          "CLANG_COVERAGE_MAPPING" : "YES",
+          "CLANG_PROFILE_DATA_DIRECTORY" : "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/.build/DerivedData/Build/ProfileData",
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "ONLY_ACTIVE_ARCH" : "YES"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "test",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

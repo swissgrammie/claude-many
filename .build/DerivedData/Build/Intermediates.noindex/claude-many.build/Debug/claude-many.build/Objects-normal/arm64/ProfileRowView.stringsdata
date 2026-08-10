@@ -1,0 +1,144 @@
+{
+  "source": "/Users/grahamcunningham/.jjhouse/claude-many-b5c33f0e/1/claude-many/claude-many/Views/ProfileRowView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Delete “%@”?",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "Running",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Stopped",
+        "location": {
+          "startingColumn": 61,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rename Profile",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 29
+        }
+      },
+      {
+        "comment": "",
+        "key": "Stop",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quit this Claude instance",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Launch Claude Desktop with this profile's data directory",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "More actions",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "Name",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 30
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rename…",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete Profile",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 82
+        }
+      },
+      {
+        "comment": "",
+        "key": "The profile is removed from the list. Its data directory stays on disk so nothing is lost.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 84
+        }
+      }
+    ]
+  },
+  "version": 1
+}

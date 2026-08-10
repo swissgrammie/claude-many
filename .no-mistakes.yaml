@@ -1,0 +1,6 @@
+# no-mistakes trusted project configuration (read from the default branch).
+#
+# This repository currently runs no CI checks (no GitHub Actions workflows, no
+# other CI provider). With `no_ci: true`, a pull request with zero registered
+# checks is treated as all-checks-passed instead of being held forever.
+no_ci: true
