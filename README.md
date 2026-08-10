@@ -92,14 +92,26 @@ xcodebuild -project claude-many.xcodeproj -scheme claude-many \
 A **live smoke test** (in `claude-manyTests/SmokeTests.swift`) launches two
 real Claude instances against throwaway scratch directories under `/tmp`,
 verifies two processes, two windows, and two independently populated data
-directories, then stops both and verifies clean termination. It is gated so
-ordinary test runs never spawn real applications:
+directories, then stops both and verifies clean termination (a second variant
+verifies leftover-instance reconciliation across an app relaunch). It is
+gated so ordinary test runs never spawn real applications — either
+`CLAUDE_MANY_SMOKE=1` or the flag file below opts in (xcodebuild does not
+reliably pass env vars to hosted test processes, so the flag file is the
+dependable route):
 
 ```sh
 touch /tmp/claude-many-smoke-run   # opt in
 xcodebuild -project claude-many.xcodeproj -scheme claude-many \
   -destination 'platform=macOS' test
 ```
+
+## Developing
+
+Contributions use a jj-based workflow in isolated jjhouse workspaces (no raw
+git writes): see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the full
+developer guide — prerequisites, the repository model (colocated jj + git,
+`base = "main"`), the jj bookmark → push → PR loop, and the build/test
+commands above (including the gated live smoke test).
 
 ## Behavior notes
 

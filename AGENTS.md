@@ -25,3 +25,4 @@ When updating this file, preserve this bar for all agents and keep entries conci
 - Tests: core logic is unit-tested with an injected fake launcher; the live
   smoke test (SmokeTests.swift) is gated behind `touch /tmp/claude-many-smoke-run`.
 - Code signing is ad-hoc only (`CODE_SIGN_IDENTITY = "-"`); no dev account needed.
+- Dev workflow: jj + jjhouse workspaces only, never raw git writes — see docs/DEVELOPMENT.md (bookmark `fm/<topic>` → `jj git push --bookmark` → PR).
