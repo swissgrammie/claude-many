@@ -105,7 +105,7 @@ struct RealClaudeLauncher: ClaudeLauncher {
         while index < buffer.count && buffer[index] == 0 { index += 1 }
 
         var argumentCount = 0
-        while index < buffer.count && argumentCount <= argc {
+        while index < buffer.count && argumentCount < argc {
             guard let end = buffer[index...].firstIndex(of: 0) else { return nil }
             index = end + 1
             argumentCount += 1
