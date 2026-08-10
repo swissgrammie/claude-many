@@ -134,7 +134,7 @@ final class ProfileManagerTests: XCTestCase {
 
     func testAddProfilePersistsImmediately() throws {
         let profile = try manager.addProfile(named: "Persisted")
-        let reloaded = try ProfileManager(store: manager.store, launcher: launcher, claudeBundleURL: manager.claudeBundleURL)
+        let reloaded = ProfileManager(store: manager.store, launcher: launcher, claudeBundleURL: manager.claudeBundleURL)
         reloaded.load()
         XCTAssertEqual(reloaded.profiles, [profile])
     }

@@ -41,7 +41,7 @@ login screen inside that instance only. From then on, each profile opens
 directly into its own logged-in session, window by window, side by side.
 
 Stopping a profile sends SIGTERM to its process (with a SIGKILL fallback
-after a few seconds), terminating only that instance — other profiles and
+after 5 seconds), terminating only that instance — other profiles and
 any separately launched Claude Desktop instances are unaffected.
 
 ## Build
